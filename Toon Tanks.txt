@@ -1,0 +1,47 @@
+5.1 Intro
+Section Plan:
+Create a tank that can move through the world
+Handle input (WASD, Mouse)
+Create enemy turret class
+Fire functionality with projectiles
+Health, Damage, and destruction to the game
+Special Effects (smoke, explosion, sounds)
+Winning/losing conditions with HUD display
+
+5.2: Pawn Class Creation
+Will have two pawns, one thats the tank we control and one that's the enemy turrets.
+These pawns will inherit from a BasePawn
+
+Unreal class diffs
+Actor:
+ - Can be placed in the world
+ - Can have a visual representation
+Pawn:
+ - Inherits from Actor
+ - Can be possessed by a controller
+ - Handles movement input
+Character:
+ - Inherits from Pawn
+ - Has character specific features
+  * Character Movement, Component, etc.
+  * Movement modes (flying)
+  * Good for bipedal characters
+
+5.3: Components
+Components are visual and physics representations. They either meshes that actually appear in the world or physical locations and area that provide data to physic representation, such as where a bullet spawns or how collision works.
+Components can be attached to each other
+Components have root components that store the transform information.
+
+RootComponent is a property of the Actor class. It's a USceneComponent, so it has a transform, but no visual representation.
+
+A RootComponent can be reassigned with some other object whose type derives from scene component.
+
+Plan is to reassign the root component to a UCapsuleComponent to exist has our location. To this we attach the BaseMesh and TurretMesh (UStaticMeshComponent) for visual representation and at the end of the TurretMesh's turret we attach a USceneComponent ProjectileSpawnPoint.
+
+5.4: Forward Declaration
+Both the player and enemies with all have the following characteristics:
+	Base Mesh, Turret Mesh, Capsule, Projectile Spawn Point
+BasePawn will have these at its properties
+
+	So when we're making our BasePawn class, when we define the capsule component it will need, its only going to a pointer to (class) UCapsuleComponent. Due to it just being a pointer, we can put "class" in front of it's declaration to in practice promise the compile this is a class that exists in an effort to avoid including the UCapsuleComponent.h file to the BasePawn.h file and instead include it in BasePawn.cpp. This is just good practice for performance.
+	You do need the header file to construct an object, access members, or for inheritance, but if you only need to declare pointers to a class type, you can just forward declare as describe previously as best practice.
