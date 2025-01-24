@@ -45,3 +45,14 @@ BasePawn will have these at its properties
 
 	So when we're making our BasePawn class, when we define the capsule component it will need, its only going to a pointer to (class) UCapsuleComponent. Due to it just being a pointer, we can put "class" in front of it's declaration to in practice promise the compile this is a class that exists in an effort to avoid including the UCapsuleComponent.h file to the BasePawn.h file and instead include it in BasePawn.cpp. This is just good practice for performance.
 	You do need the header file to construct an object, access members, or for inheritance, but if you only need to declare pointers to a class type, you can just forward declare as describe previously as best practice.
+
+5.5: Constructing the Capsule
+CreateDefaultSubobject<datatype>(TEXT("nameofobj");
+Example: CreateDefaultSubobject<datatype>(TEXT("Cool Mesh"));
+returns address of newly created component
+
+Making a UCapsuleComponent the RootComponent:
+CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Collider"));
+RootComponent = CapsuleComp;
+
+5.6: Static Mesh Components
