@@ -1,3 +1,4 @@
+New Lecturer. Has some overlapping info, but hey, consider it review! :D
 5.1 Intro
 Section Plan:
 Create a tank that can move through the world
@@ -56,3 +57,36 @@ CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Capsule Collider")
 RootComponent = CapsuleComp;
 
 5.6: Static Mesh Components
+Pretty much only important thing was about creating a default subobject and attaching it to different components, as so:
+
+BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
+BaseMesh->SetupAttachment(RootComponent);
+TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret Mesh"));
+TurretMesh->SetupAttachment(BaseMesh);
+ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Spawn Point"));
+ProjectileSpawnPoint->SetupAttachment(TurretMesh);
+
+5.8: Instance vs Default
+Went over UPROPERTY specifiers such as (EditAnywhere) and (VisibleInstanceOnly).
+InstanceOnly is only visible/anywhere when interacting with specific instances of a blueprint, such as in the level editor, and not in the blueprint editor.
+The opposite is DefaultsOnly.
+
+5.9:Editing Exposed Variables
+To expose variables to the blueprint event graph for reading and writing, you can add (BlueprintReadWrite).
+For reading only, (BlueprintReadOnly).
+You can add multiple specifiers such as (EditAnywhere, BlueprintReadWrite).
+
+5.10: Exposing the Components
+Say I have a private property of a class, but I want it to be editable from the blueprint event editor. I would need somethinglike this:
+UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+
+Can add categories to UPROPERTY specifiers such as:
+UPROPERTY(Category = "Category Name")
+
+5.11: Creating Child C++ Class
+What will the tank need that npc controlled towers will not?
+Camera and spring arm. Type UCameraComponent and USpringArmComponent.
+
+5.12: Possessing The Pawn
+Just informed you can auto possess the tank (or any) pawn through the level editors detail window as well as the blueprint editor's.
+
