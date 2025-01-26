@@ -151,3 +151,26 @@ if(EnhancedInputComponent)
 {
     EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATank::Move);
 }
+
+5.14: Local Offset
+Moving the tank.. Adding a local offset.
+Local space vs world space
+Actors have their own local directions, usually not the same as the world direction.
+You'd often want to move an actor according to their local direction, so if you move an actor forward, you'd want it to be the actor's forward, not the world's.
+This is done through AActor::AddActorLocalOffset().
+Parameters are FVector DeltaLocation, bool bSweep, FHitResult* OutSweepHitResult, ETeleportType Teleport.
+
+So, in the context of our tank pawn, to move it in the ATank::Move() function, we put.
+FVector DeltaLocation(0.f); //makes an fvector of all 0.0
+DeltaLocation.X = pValue.Get<float>(); //changes the x of deltalocation to the value passed in as a float, so if its a bool, this just moves it as 1. (NOTE: MAKE SURE TO ADD CORRECT MODIFIERS BASED ON KEY IN THE INPUT CONTEXT MENU.)
+AddActorLocalOffset(DeltaLocation);
+
+5.15: Movement Speed
+So there's a problem with deltatime in this scenario. Tank inherits from BasePawn. BasePawn's tick function is where deltatime is automatically determined, and the tick function would have to pass deltatime as a parameter in a function call. However, Tank is where our move function in, and it's called from an event rather than in a tick function or anything similar.
+Well, we gotta have an alternative to access deltatime, right?
+UGameplayStatics::GetWorldDeltaSeconds(WorldContextObject)
+WorldContextObject can be a reference to any object in the World you're working in (a World being the highest level object of our game). So, in the case of within the context of the Move() function, we can just pass GetWorldDeltaSeconds(this)
+
+5.16 Local Rotation
+Sweeping:
+Engine function that checks the distance between an object's current position and there proposed new position for if there would be an overlap between to objects/a collision
