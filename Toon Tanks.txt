@@ -90,3 +90,64 @@ Camera and spring arm. Type UCameraComponent and USpringArmComponent.
 5.12: Possessing The Pawn
 Just informed you can auto possess the tank (or any) pawn through the level editors detail window as well as the blueprint editor's.
 
+5.13 User Input
+Axis Mappings
+
+So Unreal has updated their input system and the method discussed in the course is outdated. These are MY notes B)
+
+***************ENHANCED INPUT SECTION***************
+First step is to open the ProjectName.Build.cs in the source folder. There will be a list of dependencies being defined,m such as "Core", "CoreUObject", etc. If its not already there, add "EnhancedInput" to this list.
+
+When playing, press ~ for console commands and "ShowDebug EnhancedInput" for debugging input.
+
+So, we have a .h and .cpp for character we intend to control. In the header forward declare:
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
+
+and add a property:
+UPROPERTY(EditAnywhere, Category = "Input", meta = (AllowPrivateAccess = "true"))
+UInputMappingContext* DefaultMappingContext;
+
+and an override:
+virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+In cpp, include:
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
+
+Then in void ACharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent):
+Super::SetupPlayerInputComponent(PlayerInputComponent);
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+    if(PlayerController)
+    {
+        UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+        if (Subsystem)
+        {
+            Subsystem->AddMappingContext(DefaultMappingContext, 0);
+        }
+    }
+
+There's a lot there, but something very worth pointing out is this line:
+ Subsystem->AddMappingContext(DefaultMappingContext, 0)
+That adds a mapping context to the subsystem (obviously), but what's the 0? The 0 is representative of the priority of the mapping context. This is in the case of having two mapping contexts active simultaneously that share an input. The mapping context with the highest priority (the lowest number) will be used.
+
+Other noteworthy Sybsystem functions are:
+Subsystem->RemoveMappingContext(DefaultMappingContext)
+Subsystem->HasMappingContext(DefaultMappingContext)
+
+Hopefully the uses of these functions are self apparent.
+
+After all of this, in the details window of your desired control object, search for input and select your default input mapping context.
+
+Each action will need to be declared in the header of controlled object. So for move:
+UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+UInputAction* MoveAction;
+
+Then in CPP, under where you add mapping context (outside the if), you bind the action as so:
+UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+if(EnhancedInputComponent)
+{
+    EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATank::Move);
+}

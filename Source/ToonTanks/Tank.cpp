@@ -6,6 +6,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputActionValue.h"
+
 ATank::ATank()
 {
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -16,12 +20,28 @@ ATank::ATank()
 
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+
     Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-    PlayerInputComponent->BindAxis(TEXT("IA_MoveForward"), this, &ATank::Move);
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+    if(PlayerController)
+    {
+        UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+        if (Subsystem)
+        {
+            Subsystem->AddMappingContext(DefaultMappingContext, 0);
+        }
+    }
+    
+    UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+    if(EnhancedInputComponent)
+    {
+        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATank::Move);
+    }
 }
-
-void ATank::Move(float pValue)
+void ATank::Move(const FInputActionValue& pValue)
 {
-    UE_LOG(LogTemp, Display, TEXT("Tank Move Value: %f"), pValue);
+    if (pValue.Get<bool>())
+    {
+        UE_LOG(LogTemp, Display, TEXT("Tank Move Value: True"));
+    }
 }

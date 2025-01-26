@@ -8,6 +8,10 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
 /**
  * 
  */
@@ -21,6 +25,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
 private:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -28,6 +37,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UCameraComponent* Camera;
 
-	void Move(float pValue);
+	void Move(const FInputActionValue& pValue);
 	
 };
