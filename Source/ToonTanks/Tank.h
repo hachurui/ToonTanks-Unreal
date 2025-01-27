@@ -34,6 +34,11 @@ public:
 	UInputAction* TurnAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateTurretAction;
+
+	protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 private:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -41,13 +46,19 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UCameraComponent* Camera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float Speed = 200.f;
+	float Speed = 350.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	float TurnRate = 200.f;
+	float TurnRate = 120.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float TurretTurnRate = 18.f;
 
 	void Move(const FInputActionValue& pValue);
 	void Turn(const FInputActionValue& pValue);
 	void RotateTurret(const FInputActionValue& pValue);
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+
+	APlayerController* PlayerControllerRef;
 };

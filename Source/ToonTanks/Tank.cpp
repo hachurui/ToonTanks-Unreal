@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 ATank::ATank()
 {
@@ -17,6 +18,25 @@ ATank::ATank()
     SpringArm->SetupAttachment(RootComponent);
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm);
+}
+
+void ATank::BeginPlay()
+{
+    Super::BeginPlay();
+
+    PlayerControllerRef = Cast<APlayerController>(GetController());
+}
+
+void ATank::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if(PlayerControllerRef)
+    {
+        FHitResult HitResult;
+        PlayerControllerRef->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult);
+        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 15.0, 8, FColor::Red, false, -1.0);
+    }
 }
 
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -43,7 +63,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 void ATank::Move(const FInputActionValue& pValue)
 {
-    FVector DeltaLocation(0.f);
+    FVector DeltaLocation = FVector::ZeroVector;
     float MoveDirection = pValue.Get<float>();
     float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
     DeltaLocation.X = MoveDirection*Speed*DeltaTime;
@@ -78,9 +98,12 @@ void ATank::Turn(const FInputActionValue& pValue)
 
 void ATank::RotateTurret(const FInputActionValue& pValue)
 {
-    float DeltaYaw = pValue.Get<float>();
+    FHitResult HitResult;
+    PlayerControllerRef->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility,false,HitResult);
+    RotateTurretMesh(HitResult.ImpactPoint);
+    /*float DeltaYaw = pValue.Get<float>();
     FRotator NewRotation = TurretMesh->GetComponentRotation();
     float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
     NewRotation.Yaw += DeltaYaw*TurretTurnRate*DeltaTime;
-    TurretMesh->SetWorldRotation(NewRotation);
+    TurretMesh->SetWorldRotation(NewRotation);*/
 }

@@ -173,4 +173,37 @@ WorldContextObject can be a reference to any object in the World you're working 
 
 5.16 Local Rotation
 Sweeping:
-Engine function that checks the distance between an object's current position and there proposed new position for if there would be an overlap between to objects/a collision
+Engine function that checks the distance between an object's current position and there proposed new position for if there would be an overlap between to objects/a collision.
+AddActorLocalOffset(DeltaLocation, true);
+That true sets it to sweep.
+
+Changing local rotation is fairly identical to local location.
+Compare:
+FVector DeltaLocation(0.f);
+float MoveDirection = pValue.Get<float>();
+float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+DeltaLocation.X = MoveDirection*Speed*DeltaTime;
+AddActorLocalOffset(DeltaLocation, true);
+Versus:
+FRotator DeltaRotation = FRotator::ZeroRotator;
+float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+DeltaRotation.Yaw = pValue.Get<float>()*DeltaTime*TurnRate;
+AddActorLocalRotation(DeltaRotation, true);
+
+5.17: Casting
+So here's we're trying to grab the controller of the tank pawn and store it as an APlayerController*. Problem is the GetController() function of pawns return a type AController, which is higher on the inheritance hierarchy. How remedy this?
+CASTING WOOO!!! YEAAAAAH!!!!!
+Casting is pretty much a promise to the compiler (in the same way forward declaring with "class" in a header is) that what we're casting is the datatype we're saying it is. If it isn't, cast will return null and we fail the cast.
+Cast<DataTypeWeCastTo>(PointerToObject);
+Cast<APlayerController>(GetController());
+
+5.18: Using the Mouse Cursor
+We perform a Line Trace, hitting something is a trace hit, the information of the hit stored in a struct FHitResult. Information stored include Hit Location and Hit Actor among other things.
+We trace using "Collision Channels" often times in the ECC_Visibility channel, ECollisionChannel::ECC_Visibility
+Hit events registered on objects set to Block the Visibility Channel.
+
+So to get a location from our cursor, what's happening is we're performing a line trace from the camera to the determine location, which returns a FHitResult.
+
+APlayerController::GetHitResultUnderCursor()
+Parameters: ECollisionChannel TraceChannel, bool bTraceComplex, FHitResult& HitResult)
+The HitResult passed in is an out parameter.
