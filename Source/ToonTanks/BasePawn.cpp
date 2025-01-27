@@ -3,6 +3,7 @@
 
 #include "BasePawn.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -24,6 +25,8 @@ ABasePawn::ABasePawn()
 void ABasePawn::RotateTurretMesh(FVector LookAtTarget)
 {
 	FVector ToTarget = LookAtTarget - TurretMesh->GetComponentLocation();
+	//FVectorName.Rotation() seems to create a FRotator that looks in the relative direction of the FVector? I guess? That's what my tests say, and I can fast and loose understand it
+	//but it kinda hurts my brain to think about...
 	FRotator LookAtLocation = FRotator(0.f, ToTarget.Rotation().Yaw, 0.f);
-	TurretMesh->SetWorldRotation(LookAtLocation);
+	TurretMesh->SetWorldRotation(FMath::RInterpTo(TurretMesh->GetComponentRotation(), LookAtLocation, UGameplayStatics::GetWorldDeltaSeconds(this), 10.f));
 }
