@@ -35,7 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateTurretAction;
 
-	protected:
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
