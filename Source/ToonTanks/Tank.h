@@ -34,6 +34,8 @@ public:
 	UInputAction* TurnAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* RotateTurretAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
 
 protected:
 	// Called when the game starts or when spawned
@@ -55,6 +57,7 @@ private:
 	void Move(const FInputActionValue& pValue);
 	void Turn(const FInputActionValue& pValue);
 	void RotateTurret(const FInputActionValue& pValue);
+	void FireInput(const FInputActionValue& pValue);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
