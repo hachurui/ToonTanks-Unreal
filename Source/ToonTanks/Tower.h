@@ -24,7 +24,7 @@ protected:
 private:
 	class ATank* Tank;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	int Range = 500;
+	int Range = 1500;
 
 	FTimerHandle FireRateTimerHandle;
 	float FireRate = 2.f;

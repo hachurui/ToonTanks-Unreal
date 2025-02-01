@@ -2,6 +2,7 @@
 
 
 #include "Projectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -10,6 +11,9 @@ AProjectile::AProjectile()
 	PrimaryActorTick.bCanEverTick = false;
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Projectile Mesh"));
 	RootComponent = ProjectileMesh;
+	MoveComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Move Component"));
+	MoveComponent->InitialSpeed = 5000;
+	MoveComponent->MaxSpeed = 10000;
 
 }
 
@@ -18,11 +22,18 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
 // Called every frame
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("OnHitFunction Called!"));
+	UE_LOG(LogTemp, Warning, TEXT("Hit Comp: %s, Other Actor: %s, Other Component: %s"), *HitComp->GetName(), *OtherActor->GetName(), *OtherComp->GetName());
 }
 
