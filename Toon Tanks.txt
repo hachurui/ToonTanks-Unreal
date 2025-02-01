@@ -207,3 +207,29 @@ So to get a location from our cursor, what's happening is we're performing a lin
 APlayerController::GetHitResultUnderCursor()
 Parameters: ECollisionChannel TraceChannel, bool bTraceComplex, FHitResult& HitResult)
 The HitResult passed in is an out parameter.
+
+5.19: Rotating the Turret
+To get the turret to look in the direction of the mouse cursor, we really only need a couple things.
+We need where the turret is, where the cursor is, and the vector between them (TargetLocation - ObjectLocation)
+
+5.22: Timers
+FTimerManager manages multiple FTimerHandle. Make a FTimerHandle and pass it into the FTimerManager::SetTimer() function
+
+5.23: Projectile Class
+
+5.24: Spawning The Projectile
+TSubclassOf<>
+Requires type parameter
+Allows us to store a variable of UClass, which allows us to interact with unreal reflection system
+Allows us to interact with blueprints in c++
+
+TSubClassOf<class AProjectile> ProjectileClass; in the BasePawn header
+This lets you choose a file/blueprint to set the ProjectileClass variable as in the blueprint editor
+
+Spawning Actors
+UWorld::SpawnActor
+SpawnActor<>()
+SpawnActor can be called at runtime as opposed to createsobjectdefault which is called in an objects constructor
+SpawnActor<AProjectile>(UClass, Location, Rotation)
+
+UClass
