@@ -277,3 +277,28 @@ Parameters are:
  - AController* EventInstigator: Controller that was responsible for causing this damage (the player who shot the weapon)
  - AActor* DamageCauser: Actor that actually caused the damage (the grenade that exploded)
  - TSubclassOf<class UDamageType> DamageTypeClass: Class that describes the damage that was done.
+
+5.29: The Game Mode Class
+Game Mode is abstract class trhat good with handling the game logic itself, so the rules of the game, win conditions, and even multiplayer logic.
+
+Creating new class based on GameModeBase (since we don't need additional features such as multiplayer included in GameMode). Make a Blueprint from it. There we set the DefaultPawn as to decide what the Player Start will spawn dynamically rather than just dragging and dropping a pawn into the world.
+
+5.30: Handling Actor Death
+Projectile ApplyDamage() -> Health Component DamageTaken() -> Game Mode ActorDied() -> Pawn HandleDestruction()
+
+Create HandleDestruction on BasePawn class. Add unique functionality to Tank and Tower as appropriate
+Create ActorDied function for gamemode class to call handledestruction
+Call ActorDied When Health reaches 0.
+
+5.31: Custom Player Controller
+Created a ToonTanksPlayerController C++ class from PlayerController. Created a function that passes a bool for setting the player enabled state, made a blueprint from it, then set it as default player controller in toontanksgamemode blueprint. Refactored code using a pointer to this playercontroller in the gamemode class.
+
+5.32: Starting the Game
+Disable Input -> Start Timer -> Enable input when timer finishes
+
+Timers!
+World Timer Manager (FTimerManager) has a SetTimer() function.
+SetTimer can take Timer Handle, Timer Rate, and Timer Delegate.
+
+FTimerDelegate InputDelegate = FTimerDelegate::CreateUObject(User Object, Callback, Inputs);
+GetWorldTimerManager().SetTimer(Timer Handle, Timer Delegate, float Play Rate, bLooping?)

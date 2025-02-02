@@ -24,25 +24,36 @@ void ATank::BeginPlay()
 {
     Super::BeginPlay();
 
-    PlayerControllerRef = Cast<APlayerController>(GetController());
+    TankPlayerController = Cast<APlayerController>(GetController());
 }
 
 void ATank::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if(PlayerControllerRef)
+    if(TankPlayerController)
     {
         FHitResult HitResult;
-        PlayerControllerRef->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 15.0, 8, FColor::Red, false, -1.0);
+        TankPlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult);
+        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 15.0, 8, FColor::Red, false, -1.0);
         RotateTurretMesh(HitResult.ImpactPoint);
     }
 }
 
+APlayerController* ATank::GetTankPlayerController() const {return TankPlayerController;}
+
+void ATank::HandleDestruction()
+{
+    Super::HandleDesctruction();
+        //Sets tank to be invisible
+    SetActorHiddenInGame(true);
+        //Turns off Tank's tick function for optimization
+    SetActorTickEnabled(false);
+}
+
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-
+        //Sets up InputMapping for Tank
     Super::SetupPlayerInputComponent(PlayerInputComponent);
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
     if(PlayerController)
@@ -53,7 +64,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
             Subsystem->AddMappingContext(DefaultMappingContext, 0);
         }
     }
-    
+        //Binds InputActions selected in blueprint, a triggerevent, and relevent function to each other in PlayerInputComponent
     UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
     if(EnhancedInputComponent)
     {
@@ -65,37 +76,24 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 void ATank::Move(const FInputActionValue& pValue)
 {
-    FVector DeltaLocation = FVector::ZeroVector;
+        //Get -1, 0, or 1 from pValue depending on if a/what key is pressed
     float MoveDirection = pValue.Get<float>();
+        //gets deltatime for movement calculation
     float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+        //Create empty vector and changes its X to how much change in location (What direction times speed times change in time between frames)
+    FVector DeltaLocation = FVector::ZeroVector;
     DeltaLocation.X = MoveDirection*Speed*DeltaTime;
+        //AddActorLocalOffset changes transform based on relative positioning, so increasing/descreasing DeltaLocation.X with move the tank forward/backwards regardless of location
     AddActorLocalOffset(DeltaLocation, true);
-
-    /*FVector2D MovementVector = pValue.Get<FVector2D>();
-    if(Controller != nullptr)
-    {
-        const FRotator Rotation = Controller->GetControlRotation();
-        const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-        const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-        const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-        AddMovementInput(ForwardDirection, MovementVector.Y);
-        AddMovementInput(RightDirection, MovementVector.X);
-    }*/
 }
 
 void ATank::Turn(const FInputActionValue& pValue)
 {
     FRotator DeltaRotation = FRotator::ZeroRotator;
-    float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+    float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this); 
+        //Like ATank::Move() but for rotating the tank
     DeltaRotation.Yaw = pValue.Get<float>()*DeltaTime*TurnRate;
     AddActorLocalRotation(DeltaRotation, true);
-    /*float DeltaYaw = pValue.Get<float>()*TurnRate;
-    FRotator NewRotation = GetActorRotation();
-    NewRotation.Yaw += DeltaYaw*UGameplayStatics::GetWorldDeltaSeconds(this);
-    SetActorRotation(NewRotation);*/
 }
 
 void ATank::RotateTurret(const FInputActionValue& pValue)

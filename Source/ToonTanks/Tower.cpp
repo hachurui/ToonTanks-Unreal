@@ -23,6 +23,12 @@ void ATower::Tick(float DeltaTime)
     }
 }
 
+void ATower::HandleDesctruction()
+{
+    Super::HandleDesctruction();
+    Destroy();
+}
+
 void ATower::CheckFireCondition()
 {
     if(InFireRange())
