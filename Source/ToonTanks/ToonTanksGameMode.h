@@ -22,10 +22,15 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartGame();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void GameOver(bool bWonGame); //pass false if player died, true if player WON!!! :D
 private:
 	class ATank* Tank;
 	class AToonTanksPlayerController* ToonTanksPlayerController;
 
 	float StartDelay = 3.f; //how long before game starts once level is loaded
 	void HandleGameStart();
+	int GetTargetTowerCount();
+	int TargetTowersCount = 0;
 }; 
