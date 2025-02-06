@@ -37,5 +37,12 @@ private:
 		//This will be initialized in the blueprint editor. For the purpose of spawning the selected projectile
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	TSubclassOf<class AProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	class UParticleSystem* DeathParticles;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	class USoundBase* DeathSound;
+
 	
 };

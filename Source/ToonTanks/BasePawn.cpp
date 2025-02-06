@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectile.h"
+#include "Particles/ParticleSystem.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -25,9 +26,10 @@ ABasePawn::ABasePawn()
 	ProjectileSpawnPoint->SetupAttachment(TurretMesh);
 }
 
-void ABasePawn::HandleDesctruction()
+void ABasePawn::HandleDesctruction() //handles vfx and sfx when an actor is to be destoryed
 {
-	//Handle visual and audio fx
+	if(DeathParticles) UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticles, GetActorLocation(), GetActorRotation());
+	if(DeathSound) UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 }
 
 void ABasePawn::RotateTurretMesh(FVector LookAtTarget)
