@@ -302,3 +302,26 @@ SetTimer can take Timer Handle, Timer Rate, and Timer Delegate.
 
 FTimerDelegate InputDelegate = FTimerDelegate::CreateUObject(User Object, Callback, Inputs);
 GetWorldTimerManager().SetTimer(Timer Handle, Timer Delegate, float Play Rate, bLooping?)
+
+5.33: Start Game Widget
+Created a widget blueprint. Widgets seem to be pretty much graphical overlays put over the game screen to display information (or menus??).
+Made it say "Get ready" and put it on screen upon game start.
+
+5.34: Countdown Timer
+In the widget blueprint from previous section, in the blueprint editor, created a variable CountDown that I hard set to 3.0 (amount of seconds before player gains control of tank upon game start) and, through blueprints, decreased by deltatime and printed a string based on the integer through a switch by int node.
+
+5.35: Displaying Countdown Time
+Take switch from last section and rather than printing a string, changed the text of the textbox
+
+5.36: Winning and losing
+
+Winning and losing will be handle through a function in Gamemode with a parameter of type bool that represents if the player won (true) or lost (false).
+Will be a blueprint implementable function, so done through blueprints. Doing this because I think blueprint by in large are more effecting for visual elements (static mesh, widget popping up, etc.
+Call and pass false upon ActorDied() if DeadActor == Tank and pass false if DeadActor was a tower and tower count is 0.
+How do we get amount of towers? UGameplayStatics::GetAllActorsOfClass!!
+Parameters are (const UObject WorldContextObject, TSubbclassof<AActor> ActorClass, TArray<AActor> &OutActors).
+
+5.38: Hit Particles
+So I already have access to some particle effects, so this is more about implementing them obvy.
+So, forward declare a UParticleSystem* and make it EditAnywhere. Select the particle system you want in blueprint editor.
+

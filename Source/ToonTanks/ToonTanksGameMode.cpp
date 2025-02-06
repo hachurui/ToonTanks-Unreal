@@ -29,6 +29,7 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor)
             ToonTanksPlayerController->SetPlayerEnabledState(false);
         }
         GameOver(false);
+        UE_LOG(LogTemp, Warning, TEXT("You lost!"));
     }
     else if(ATower* DestroyedTower = Cast<ATower>(DeadActor))
     {
@@ -37,6 +38,7 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor)
         if(TargetTowersCount <= 0)
         {
             GameOver(true);
+            UE_LOG(LogTemp, Warning, TEXT("You won!"));
         }
     }
 }
