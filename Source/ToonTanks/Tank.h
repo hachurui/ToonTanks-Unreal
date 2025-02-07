@@ -30,6 +30,8 @@ public:
 
 	void HandleDestruction();
 	APlayerController* GetTankPlayerController() const;
+
+	bool bAlive = true; //will be set false on player death, used to have turrets stop firing after loss.
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -49,6 +49,7 @@ void ATank::HandleDestruction()
     SetActorHiddenInGame(true);
         //Turns off Tank's tick function for optimization
     SetActorTickEnabled(false);
+    bAlive = false;
 }
 
 void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

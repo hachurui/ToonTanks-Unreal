@@ -30,6 +30,7 @@ void ABasePawn::HandleDesctruction() //handles vfx and sfx when an actor is to b
 {
 	if(DeathParticles) UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticles, GetActorLocation(), GetActorRotation());
 	if(DeathSound) UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	if(DeathCameraShake) GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DeathCameraShake);
 }
 
 void ABasePawn::RotateTurretMesh(FVector LookAtTarget)
@@ -44,7 +45,7 @@ void ABasePawn::RotateTurretMesh(FVector LookAtTarget)
 void ABasePawn::Fire()
 {
 	//DEBUG: DrawDebugSphere(GetWorld(), ProjectileSpawnPoint->GetComponentLocation(), 10.f, 10, FColor::Red, false, -1);
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation());
 	Projectile->SetOwner(this);
 }
 

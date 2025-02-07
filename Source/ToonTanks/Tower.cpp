@@ -17,7 +17,11 @@ void ATower::BeginPlay()
 void ATower::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    if(InFireRange())
+    if(Tank == nullptr)
+    {
+        return;
+    }
+    if(InFireRange() && Tank->bAlive)
     {
         RotateTurretMesh(Tank->GetActorLocation());
     }
@@ -31,7 +35,7 @@ void ATower::HandleDesctruction()
 
 void ATower::CheckFireCondition()
 {
-    if(InFireRange())
+    if(InFireRange() && Tank->bAlive)
     {
         Fire();
     }

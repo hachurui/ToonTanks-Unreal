@@ -324,4 +324,16 @@ Parameters are (const UObject WorldContextObject, TSubbclassof<AActor> ActorClas
 5.38: Hit Particles
 So I already have access to some particle effects, so this is more about implementing them obvy.
 So, forward declare a UParticleSystem* and make it EditAnywhere. Select the particle system you want in blueprint editor.
+Then, to actually display it, UGameplayStatic::SpawnEmitterAtLocation()
+So we call the function if(HitParticles) UGameplayStatics::SpawnEmitterAtLocation(this, HitParticles, GetActorLocation(), GetActorRotation()); during OnHit right before we destroy the object.
+You don't need to make any sort of delay or anything to ensure the particle remains after the destruction of the object as UParticleSystems are not components and therefore are in no way attached to the object. It's just something with the delegation of taking care of particles associated with its "owner" object.
 
+5.39: Smoke Trail
+As opposed to the non component method of particles above, there exists UParticleSystemComponents which ARE component.
+UParticleSystems are created with the SpawnEmitterAtLocation function, while UParticleSystemsComponent are created with CreateDefaultSubobject (in constructor typically and attached to the root)
+
+5.41: Sounds
+class USoundBase* SoundName;
+GameplayStatics::PlaySoundAtLocation()
+
+5.42: Camera Shake

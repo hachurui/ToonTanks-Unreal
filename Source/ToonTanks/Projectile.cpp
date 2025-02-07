@@ -43,19 +43,20 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	//UE_LOG(LogTemp, Warning, TEXT("OnHitFunction Called!"));
 	//UE_LOG(LogTemp, Warning, TEXT("Hit Comp: %s, Other Actor: %s, Other Component: %s"), *HitComp->GetName(), *OtherActor->GetName(), *OtherComp->GetName());
 	//This is where we want to call function to apply damage
-	auto MyOwner = GetOwner();
+	AActor* MyOwner = GetOwner();
 	if (MyOwner == nullptr) 
 	{
 		Destroy();
 		return;
 	}
-	auto MyOwnerInstigator = MyOwner->GetInstigatorController();
-	auto DamageTypeClass = UDamageType::StaticClass();
+	AController* MyOwnerInstigator = MyOwner->GetInstigatorController();
+	UClass* DamageTypeClass = UDamageType::StaticClass();
 
 	if(OtherActor && OtherActor != this && OtherActor != MyOwner)
 	{
 		UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, DamageTypeClass);
 		if(HitParticles) UGameplayStatics::SpawnEmitterAtLocation(this, HitParticles, GetActorLocation(), GetActorRotation());
+		if(HitCameraShakeClass) GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
 	}
 	if(HitSound)UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 	Destroy();
